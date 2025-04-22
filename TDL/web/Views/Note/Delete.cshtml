@@ -1,0 +1,20 @@
+﻿@model Domain.Entities.Note
+
+
+@{
+    ViewData["Title"] = "Удалить заметку";
+}
+
+<h1>Удалить</h1>
+
+<h3>Вы уверены, что хотите удалить эту заметку?</h3>
+<div>
+    <h4>@Model.Title</h4>
+    <p>@Model.Content</p>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Удалить</button> |
+    <a asp-action="Index">Отмена</a>
+</form>
