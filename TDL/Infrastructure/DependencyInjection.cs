@@ -2,9 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Infrastructure.Data;
+using Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Infrastructure.Data;
 
 public static class DependencyInjection
 {
@@ -24,8 +25,8 @@ public static class DependencyInjection
         // Регистрация контекста
 
         // Identity
-        services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+        services.AddIdentity<User, IdentityRole>()
+               .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
         return services;
