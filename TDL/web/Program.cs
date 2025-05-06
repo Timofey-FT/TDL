@@ -18,15 +18,6 @@ builder.Services.AddAuthentication().AddGoogle(options =>
 
 var app = builder.Build();
 
-
-
-
-
-
-
-
-
-// Конфигурация HTTP-конвейера
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

@@ -10,6 +10,10 @@
     <a asp-action="Create" class="btn btn-primary">Создать новую</a>
 </p>
 
+<form id="antiForgeryForm" method="post">
+    @Html.AntiForgeryToken()
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -22,18 +26,52 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Title</td>
-                <td>@item.CreatedAt.ToShortDateString()</td>
-                <td>@string.Join(", ", item.NoteTags.Select(x=> x.Tag.Name)) </td>
-                <td></td>
-
-                
+            var completedClass = item.IsCompleted ? "completed-note" : "";
+            <tr class="@completedClass" data-note-id="@item.Id">
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                    <input type="checkbox" onchange="toggleCompleted(@item.Id)" @(item.IsCompleted ? "checked disabled" : "") />
+                    @item.Title
+                </td>
+                <td>@item.CreatedAt.ToShortDateString()</td>
+                <td>@string.Join(", ", item.NoteTags.Select(x => x.Tag.Name))</td>
+                <td>
+                    @if (!item.IsCompleted)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a>
+                    }
                     <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<style>
+    .completed-note {
+        color: #888 !important;
+        text-decoration: line-through;
+    }
+</style>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        function toggleCompleted(id) {
+            fetch('/Note/ToggleComplete', {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            }).then(() => {
+                const row = document.querySelector(`[data-note-id="${id}"]`);
+                if (row) {
+                    row.classList.add('completed-note');
+                    const checkbox = row.querySelector('input[type="checkbox"]');
+                    if (checkbox) checkbox.disabled = true;
+                }
+            });
+        }
+    </script>
+}

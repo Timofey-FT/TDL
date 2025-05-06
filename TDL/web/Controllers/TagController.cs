@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace web.Controllers
 {
+    [Authorize]
     public class TagController : Controller
     {
         private readonly ApplicationDbContext _context;

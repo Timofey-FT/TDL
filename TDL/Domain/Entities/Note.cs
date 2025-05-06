@@ -14,6 +14,7 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public bool IsCompleted { get; set; } = false;
 
         public List<NoteTag> NoteTags { get; set; } = new List<NoteTag>();
 

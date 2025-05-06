@@ -1,11 +1,13 @@
 ﻿using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace web.Controllers
 {
+    [Authorize]
     public class NoteController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -137,8 +139,23 @@ namespace web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleComplete([FromBody] ToggleCompleteRequest request)
+        {
+            var note = await _context.Notes.FindAsync(request.Id);
+            if (note == null) return NotFound();
 
+            note.IsCompleted = true;
+            await _context.SaveChangesAsync(); // обязательно!
 
+            return Ok();
+        }
+
+        public class ToggleCompleteRequest
+        {
+            public int Id { get; set; }
+        }
 
 
     }
